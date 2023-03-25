@@ -1,9 +1,12 @@
-using Godot;
 using System;
 
-public enum ControlState
+namespace GodotVTT
 {
-    None = 0,
-    Primary,
-    Secondary
+    [Flags]
+    public enum ControlState
+    {
+        None = 0,
+        Primary = 1,
+        Secondary = 1 << 1
+    }
 }

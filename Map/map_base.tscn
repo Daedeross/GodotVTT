@@ -1,0 +1,111 @@
+[gd_scene load_steps=13 format=3 uid="uid://1f7qi0casby1"]
+
+[ext_resource type="Texture2D" uid="uid://b8ss6g8kjstsr" path="res://Map/sample_map.png" id="1_mn5sd"]
+[ext_resource type="PackedScene" uid="uid://dclqo7bphf4du" path="res://Token/token_base.tscn" id="1_rnt2y"]
+[ext_resource type="Script" path="res://Map/MapBase.cs" id="1_wjxp2"]
+[ext_resource type="Script" path="res://Map/MainCamera.cs" id="2_kreyc"]
+[ext_resource type="Script" path="res://Map/FogRenderer.cs" id="5_pxeat"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_igvov"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jwfn8"]
+blend_mode = 3
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_w7i8e"]
+viewport_path = NodePath("VBLRender")
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_oqjow"]
+polygon = PackedVector2Array(-1395, 544, -1303, 543, -1303, 250, -803, 250, -800, 537, -206, 542, -199, 150, 97, 144, 100, -147, 5, -151, -1, -54, -400, -51, -1408, -255, -1897, -246, -1900, 344, -1998, 354, -1995, 443, -1402, 445)
+
+[sub_resource type="Gradient" id="Gradient_ops31"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_or554"]
+gradient = SubResource("Gradient_ops31")
+width = 1024
+height = 1024
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_w6ke8"]
+polygon = PackedVector2Array(-2299, 347, -2104, 355, -2105, 445, -2201, 455, -2201, 943, -1403, 951, -1395, 656, -1304, 651, -1299, 749, -797, 747, -796, 651, -204, 660, -198, 943, -283, 1273, -2329, 1257)
+
+[node name="Map" type="Node2D"]
+script = ExtResource("1_wjxp2")
+
+[node name="VBLRender" type="SubViewport" parent="."]
+gui_disable_input = true
+canvas_cull_mask = 4294967288
+size = Vector2i(4096, 2048)
+render_target_clear_mode = 2
+script = ExtResource("5_pxeat")
+
+[node name="ColorRect" type="ColorRect" parent="VBLRender"]
+visible = false
+light_mask = 524288
+visibility_layer = 524288
+material = SubResource("CanvasItemMaterial_igvov")
+offset_left = -2817.0
+offset_top = -787.0
+offset_right = -769.0
+offset_bottom = 237.0
+scale = Vector2(1.842, 1)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="VBLRender"]
+
+[node name="VBLCamera" type="Camera2D" parent="VBLRender"]
+light_mask = 524288
+visibility_layer = 524288
+
+[node name="MainCamera" type="Camera2D" parent="."]
+script = ExtResource("2_kreyc")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
+visible = false
+z_index = 1
+position = Vector2(-1125, 525)
+
+[node name="FogOfWar" type="Sprite2D" parent="CanvasGroup"]
+light_mask = 4
+visibility_layer = 262144
+z_index = 5
+material = SubResource("CanvasItemMaterial_jwfn8")
+position = Vector2(742, -166)
+texture = SubResource("ViewportTexture_w7i8e")
+
+[node name="MainGroup" type="CanvasGroup" parent="."]
+
+[node name="MapTexture" type="Sprite2D" parent="MainGroup"]
+light_mask = 3
+visibility_layer = 4
+z_index = -1
+texture = ExtResource("1_mn5sd")
+
+[node name="Background" type="TileMap" parent="MainGroup"]
+z_index = -2
+format = 2
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="MainGroup"]
+occluder = SubResource("OccluderPolygon2D_oqjow")
+occluder_light_mask = 524295
+
+[node name="PointLight2D" type="PointLight2D" parent="MainGroup"]
+position = Vector2(-871, 343)
+range_layer_min = -1
+range_layer_max = 1
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_or554")
+texture_scale = 2.0
+
+[node name="CanvasModulate" type="CanvasModulate" parent="MainGroup"]
+color = Color(0, 0, 0, 1)
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="MainGroup"]
+occluder = SubResource("OccluderPolygon2D_w6ke8")
+occluder_light_mask = 524295
+
+[node name="Token" parent="MainGroup" instance=ExtResource("1_rnt2y")]
+position = Vector2(-1074, 526)

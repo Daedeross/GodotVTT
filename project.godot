@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Projects"
-run/main_scene="res://Map/map_base.tscn"
+run/main_scene="res://Session/Session.tscn"
 config/features=PackedStringArray("4.0", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -39,3 +39,7 @@ secondary={
 2d_render/layer_3="TokenLayer"
 2d_render/layer_4="OverlayLayer"
 2d_render/layer_20="FogOfWar"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cianvvxmonb1d"]
+
+[ext_resource type="Script" path="res://Campaign/Campaign.cs" id="1_fycjf"]
+
+[node name="Campaign" type="Node"]
+script = ExtResource("1_fycjf")

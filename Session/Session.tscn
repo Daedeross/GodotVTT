@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsbk6by0n8kh8"]
+
+[ext_resource type="Script" path="res://Session/Session.cs" id="1_mb3nb"]
+[ext_resource type="PackedScene" uid="uid://1f7qi0casby1" path="res://Map/map_base.tscn" id="2_warna"]
+
+[node name="Session" type="Node"]
+script = ExtResource("1_mb3nb")
+
+[node name="Map" parent="." instance=ExtResource("2_warna")]

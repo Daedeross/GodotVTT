@@ -1,12 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://dclqo7bphf4du"]
+[gd_scene load_steps=7 format=3 uid="uid://dclqo7bphf4du"]
 
 [ext_resource type="Script" path="res://Token/TokenBase.cs" id="1_58bt2"]
 [ext_resource type="Texture2D" uid="uid://bcq3qdmx3770u" path="res://TestArtifacts/Dominic.png" id="2_b7s58"]
+[ext_resource type="Script" path="res://Token/TokenControl.cs" id="3_q7y06"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fedvu"]
-radius = 50.0
+radius = 40.0
 
 [sub_resource type="Gradient" id="Gradient_uwlxu"]
+interpolation_mode = 1
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_wpcli"]
@@ -30,7 +32,16 @@ texture = ExtResource("2_b7s58")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 scale = Vector2(10, 10)
+energy = 16.0
 range_item_cull_mask = 524292
 shadow_enabled = true
 shadow_item_cull_mask = 524292
 texture = SubResource("GradientTexture2D_wpcli")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+
+[node name="Controls" type="Node" parent="."]
+script = ExtResource("3_q7y06")
+
+[node name="TokenControlSynchronizer" type="MultiplayerSynchronizer" parent="Controls"]
+root_path = NodePath("../..")

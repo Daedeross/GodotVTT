@@ -23,7 +23,8 @@ namespace GodotVTT
         {
             if (_controlState == ControlState.Primary)
             {
-                Position = _currentMap.GetLocalMousePosition();
+                var pos = _currentMap.GetLocalMousePosition();
+                Rpc(MethodName.SetPosition, pos);
             }
         }
 
@@ -54,6 +55,13 @@ namespace GodotVTT
         private void OnMouseExited()
         {
             _isMouseOver = false;
+        }
+
+        [Rpc(CallLocal = true)]
+        public void SetPosition(Vector2 pos)
+        {
+            GD.Print($"RPC {Multiplayer.GetRemoteSenderId()} : {pos}");
+            Position = pos;
         }
     }
 }

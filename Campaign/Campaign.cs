@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace GodotVTT
 {
+    /// <summary>
+    /// Class to manage a campaign. A bucket of maps, characters, handouts, etc.
+    /// </summary>
     public partial class Campaign : Node
     {
         private readonly Dictionary<string, MapBase> _maps = new Dictionary<string, MapBase>();

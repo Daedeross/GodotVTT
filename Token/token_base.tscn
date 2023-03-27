@@ -38,10 +38,5 @@ shadow_enabled = true
 shadow_item_cull_mask = 524292
 texture = SubResource("GradientTexture2D_wpcli")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-
 [node name="Controls" type="Node" parent="."]
 script = ExtResource("3_q7y06")
-
-[node name="TokenControlSynchronizer" type="MultiplayerSynchronizer" parent="Controls"]
-root_path = NodePath("../..")

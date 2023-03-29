@@ -27,6 +27,7 @@ script = ExtResource("1_58bt2")
 shape = SubResource("CircleShape2D_fedvu")
 
 [node name="MainSprite" type="Sprite2D" parent="."]
+show_behind_parent = true
 scale = Vector2(0.391, 0.391)
 texture = ExtResource("2_b7s58")
 
@@ -40,3 +41,9 @@ texture = SubResource("GradientTexture2D_wpcli")
 
 [node name="Controls" type="Node" parent="."]
 script = ExtResource("3_q7y06")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[node name="GhostSprite" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_b7s58")

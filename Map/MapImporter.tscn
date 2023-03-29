@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1nsmc20om26o"]
+
+[ext_resource type="Script" path="res://Map/MapImporter.cs" id="1_d4avu"]
+[ext_resource type="Texture2D" uid="uid://bumnfqa1uvw80" path="res://default_light.tres" id="2_upeks"]
+
+[node name="MapImporter" type="Node2D"]
+script = ExtResource("1_d4avu")
+DefaultLightTexture = ExtResource("2_upeks")

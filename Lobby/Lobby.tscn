@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://chy0rarj8rub3"]
 
 [ext_resource type="Script" path="res://Lobby/Lobby.cs" id="1_aifpy"]
-[ext_resource type="PackedScene" uid="uid://dsbk6by0n8kh8" path="res://Session/Session.tscn" id="2_6o3hd"]
+[ext_resource type="PackedScene" path="res://Session/Session.tscn" id="2_6o3hd"]
 
 [node name="Lobby" type="Control"]
 layout_mode = 3
@@ -12,6 +12,7 @@ script = ExtResource("1_aifpy")
 SessionScene = ExtResource("2_6o3hd")
 
 [node name="Connect" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

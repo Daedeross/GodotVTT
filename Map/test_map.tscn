@@ -1,0 +1,159 @@
+[gd_scene load_steps=16 format=3 uid="uid://1f7qi0casby1"]
+
+[ext_resource type="Texture2D" uid="uid://b8ss6g8kjstsr" path="res://Map/sample_map.png" id="1_mn5sd"]
+[ext_resource type="PackedScene" uid="uid://dclqo7bphf4du" path="res://Token/token_base.tscn" id="1_rnt2y"]
+[ext_resource type="Script" path="res://Map/MapBase.cs" id="1_wjxp2"]
+[ext_resource type="Script" path="res://Map/MainCamera.cs" id="2_kreyc"]
+[ext_resource type="Shader" path="res://Map/white.gdshader" id="2_xxldk"]
+[ext_resource type="Script" path="res://Map/FogRenderer.cs" id="5_pxeat"]
+[ext_resource type="Texture2D" uid="uid://bumnfqa1uvw80" path="res://default_light.tres" id="6_6r4m2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t86ii"]
+shader = ExtResource("2_xxldk")
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jwfn8"]
+blend_mode = 3
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_w7i8e"]
+viewport_path = NodePath("VBLRender")
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_oqjow"]
+polygon = PackedVector2Array(-1395, 544, -1303, 543, -1303, 250, -803, 250, -800, 537, -206, 542, -199, 150, 97, 144, 100, -147, 5, -151, -1, -54, -400, -51, -1408, -255, -1897, -246, -1900, 344, -1998, 354, -1995, 443, -1402, 445)
+
+[sub_resource type="Gradient" id="Gradient_ops31"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_or554"]
+resource_name = "DefaultLight"
+gradient = SubResource("Gradient_ops31")
+width = 1024
+height = 1024
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_w6ke8"]
+polygon = PackedVector2Array(-2299, 347, -2104, 355, -2105, 445, -2201, 455, -2201, 943, -1403, 951, -1395, 656, -1304, 651, -1299, 749, -797, 747, -796, 651, -204, 660, -198, 943, -283, 1273, -2329, 1257)
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_iqnrf"]
+vertices = PackedVector2Array(-800, 536, -216, 552, -224, 648, -800, 648, -1296, 552, -2000, 448, -1400, 448, -1400, 552, -1408, 952, -1296, 256, -800, 256, -800, 752, -1296, 752, -1304, 648, -1392, 656, -2104, 448, -2104, 344, -2000, 344, -2200, 944, -2200, 456)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(5, 6, 7, 8), PackedInt32Array(4, 9, 10, 0), PackedInt32Array(4, 3, 11, 12, 13), PackedInt32Array(7, 4, 13, 14), PackedInt32Array(15, 16, 17, 5), PackedInt32Array(8, 18, 19, 15, 5), PackedInt32Array(8, 7, 14)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-2000, 448, -1400, 448, -1400, 552, -1296, 552, -1296, 256, -800, 256, -800, 536, -216, 552, -224, 648, -800, 648, -800, 752, -1296, 752, -1304, 648, -1392, 656, -1408, 952, -2200, 944, -2200, 456, -2104, 448, -2104, 344, -2000, 344)])
+
+[node name="Map" type="Node2D"]
+script = ExtResource("1_wjxp2")
+TokenPrototype = ExtResource("1_rnt2y")
+MapScale = 100.0
+
+[node name="VBLRender" type="SubViewport" parent="."]
+gui_disable_input = true
+canvas_cull_mask = 4294967288
+size = Vector2i(4096, 2048)
+script = ExtResource("5_pxeat")
+
+[node name="Panel" type="Panel" parent="VBLRender"]
+light_mask = 31775
+visibility_layer = 15
+material = SubResource("ShaderMaterial_t86ii")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4619.0
+offset_top = -3517.0
+offset_right = 381.0
+offset_bottom = 1483.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBLCamera" type="Camera2D" parent="VBLRender"]
+light_mask = 524288
+visibility_layer = 524288
+
+[node name="MainCamera" type="Camera2D" parent="."]
+script = ExtResource("2_kreyc")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
+visible = false
+z_index = 1
+position = Vector2(-1125, 525)
+
+[node name="FogOfWar" type="Sprite2D" parent="CanvasGroup"]
+visible = false
+light_mask = 4
+visibility_layer = 262144
+z_index = 5
+material = SubResource("CanvasItemMaterial_jwfn8")
+position = Vector2(681, -143)
+texture = SubResource("ViewportTexture_w7i8e")
+
+[node name="MainGroup" type="CanvasGroup" parent="."]
+
+[node name="MapTexture" type="Sprite2D" parent="MainGroup"]
+light_mask = 3
+visibility_layer = 4
+z_index = -1
+texture = ExtResource("1_mn5sd")
+
+[node name="Background" type="TileMap" parent="MainGroup"]
+z_index = -2
+format = 2
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="MainGroup"]
+occluder = SubResource("OccluderPolygon2D_oqjow")
+occluder_light_mask = 524295
+
+[node name="PointLight2D" type="PointLight2D" parent="MainGroup"]
+position = Vector2(-895, 364)
+range_layer_min = -1
+range_layer_max = 1
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_or554")
+texture_scale = 2.0
+
+[node name="CanvasModulate" type="CanvasModulate" parent="MainGroup"]
+visible = false
+color = Color(0, 0, 0, 1)
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="MainGroup"]
+occluder = SubResource("OccluderPolygon2D_w6ke8")
+occluder_light_mask = 524295
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="MainGroup" groups=["nav_regions"]]
+navigation_polygon = SubResource("NavigationPolygon_iqnrf")
+
+[node name="Token" parent="." instance=ExtResource("1_rnt2y")]
+position = Vector2(-1592, 728)
+
+[node name="PointLight2D2" type="PointLight2D" parent="Token"]
+visible = false
+shadow_enabled = true
+texture = ExtResource("6_6r4m2")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Button" type="Button" parent="HUD"]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 141.0
+offset_bottom = 81.0
+text = "Add Token"
+
+[node name="Instructions" type="Label" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Clock where to spawn the token"
+
+[connection signal="pressed" from="HUD/Button" to="." method="AddToken"]

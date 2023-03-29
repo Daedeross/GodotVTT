@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cox4l27rwgnxy"]
+
+[node name="FileDialog" type="FileDialog"]
+title = "Open a File"
+position = Vector2i(50, 50)
+size = Vector2i(500, 500)
+visible = true
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.dd2vtt")
+show_hidden_files = true

@@ -9,6 +9,8 @@ namespace GodotVTT
     /// </summary>
     public partial class Campaign : Node
     {
+        private readonly Dictionary<ulong, int> _resourceHashes = new Dictionary<ulong, int>();
+
         private readonly Dictionary<string, MapBase> _maps = new Dictionary<string, MapBase>();
 
         private MapBase _currentMap;
@@ -16,6 +18,7 @@ namespace GodotVTT
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
+
         }
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -23,7 +26,7 @@ namespace GodotVTT
         {
         }
 
-        public bool SwitchToMap(string  mapName)
+        public bool SwitchToMap(string mapName)
         {
             if (_maps.TryGetValue(mapName, out var map))
             {

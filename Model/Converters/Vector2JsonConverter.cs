@@ -40,7 +40,11 @@ namespace GodotVTT
 
         public override void Write(Utf8JsonWriter writer, Vector2 value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStartObject();
+            writer.WritePropertyName("x");
+            writer.WriteNumberValue(value.X);
+            writer.WritePropertyName("y");
+            writer.WriteNumberValue(value.Y);
         }
     }
 }

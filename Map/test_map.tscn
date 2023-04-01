@@ -52,6 +52,7 @@ size = Vector2i(4096, 2048)
 script = ExtResource("5_pxeat")
 
 [node name="Panel" type="Panel" parent="VBLRender"]
+visible = false
 light_mask = 31775
 visibility_layer = 15
 material = SubResource("ShaderMaterial_t86ii")
@@ -74,12 +75,12 @@ visibility_layer = 524288
 [node name="MainCamera" type="Camera2D" parent="."]
 script = ExtResource("2_kreyc")
 
-[node name="CanvasGroup" type="CanvasGroup" parent="."]
+[node name="FogGroup" type="CanvasGroup" parent="."]
 visible = false
 z_index = 1
 position = Vector2(-1125, 525)
 
-[node name="FogOfWar" type="Sprite2D" parent="CanvasGroup"]
+[node name="FogOfWar" type="Sprite2D" parent="FogGroup"]
 visible = false
 light_mask = 4
 visibility_layer = 262144
@@ -90,15 +91,15 @@ texture = SubResource("ViewportTexture_w7i8e")
 
 [node name="MainGroup" type="CanvasGroup" parent="."]
 
-[node name="MapTexture" type="Sprite2D" parent="MainGroup"]
+[node name="Background" type="TileMap" parent="MainGroup"]
+z_index = -2
+format = 2
+
+[node name="MapSprite" type="Sprite2D" parent="MainGroup"]
 light_mask = 3
 visibility_layer = 4
 z_index = -1
 texture = ExtResource("1_mn5sd")
-
-[node name="Background" type="TileMap" parent="MainGroup"]
-z_index = -2
-format = 2
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="MainGroup"]
 occluder = SubResource("OccluderPolygon2D_oqjow")

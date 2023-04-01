@@ -20,6 +20,8 @@ namespace GodotVTT
 
         private bool _plop = false;
 
+        private bool _small = true;
+
         [Export]
         public PackedScene TokenPrototype;
 
@@ -126,9 +128,23 @@ namespace GodotVTT
         {
             if (@event is InputEventKey eventKey)
             {
-                if(eventKey.Keycode == Key.Escape)
+                if(eventKey.Keycode == Key.Escape && eventKey.Pressed)
                 {
                     StopPlop();
+                }
+                if (eventKey.Keycode == Key.L && eventKey.Pressed)
+                {
+                    Texture2D tex;
+                    if (_small)
+                    {
+                        tex = ResourceLoader.Load<Texture2D>("res://Map/small_sample_map.png");
+                    }
+                    else
+                    {
+                        tex = ResourceLoader.Load<Texture2D>("res://Map/sample_map.png");
+                    }
+                    _small = !_small;
+                    SetMapTexture(tex);
                 }
             }
             else if (@event is InputEventMouseButton eventMouseButton)

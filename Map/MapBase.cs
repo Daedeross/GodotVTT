@@ -1,14 +1,16 @@
 using Godot;
+using GodotVTT.Interfaces;
+using GodotVTT.Model.Dto;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using static GodotVTT.MapImporter;
 
 namespace GodotVTT
 {
-    public partial class MapBase : Node2D
+    public partial class MapBase : Node2D, IHaveId
     {
-        private readonly Color _debugColor = new Color("Red");
+        private readonly Color _debugVoidColor = new Color("Red");
+        private readonly Color _debugSolidColor = new Color("Green");
 
         private ControlState _controlState = ControlState.None;
 
@@ -20,7 +22,13 @@ namespace GodotVTT
 
         private bool _plop = false;
 
-        private bool _small = true;
+        private CompositePolygon _navigationZones;
+        private NavigationRegion2D _navigationRegion;
+
+        public Resolution MapResolution { get; set; }
+
+        [Export]
+        public bool DrawNavigation { get; set; } = true;
 
         [Export]
         public PackedScene TokenPrototype;
@@ -48,8 +56,6 @@ namespace GodotVTT
             }
         }
 
-        internal NavHelper TestPolys;
-
         private CanvasGroup _mainGroup;
 
         public CanvasGroup MainGroup
@@ -64,6 +70,8 @@ namespace GodotVTT
                 return _mainGroup;
             }
         }
+
+        public Guid Id { get; set; }
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
@@ -93,35 +101,20 @@ namespace GodotVTT
         {
             base._Draw();
 
-            //var navs = GetTree().GetNodesInGroup("nav_regions");
-            //foreach (var nav in navs)
-            //{
-            //    if (nav is NavigationRegion2D region)
-            //    {
-            //        foreach (var outline in region.NavigationPolygon.Outlines)
-            //        {
-            //            DrawPolyline(outline, _debugColor, 1f);
-            //            DrawLine(outline.Last(), outline.First(), _debugColor, 1f);
-            //        }
-            //    }
-            //}
+            if (DrawNavigation && _navigationZones != null)
+            {
+                foreach (var poly in _navigationZones.Solids)
+                {
+                    DrawPolyline(poly, _debugSolidColor, 2f, true);
+                    DrawLine(poly.Last(), poly.First(), _debugSolidColor, 2f, true);
+                }
 
-
-            //if (TestPolys != null)
-            //{
-            //    var green = new Color("Green");
-            //    foreach (var poly in TestPolys.Solids)
-            //    {
-            //        DrawPolyline(poly, green, 2f, true);
-            //        DrawLine(poly.Last(), poly.First(), green, 2f, true);
-            //    }
-            //    var red = new Color("Red");
-            //    foreach (var poly in TestPolys.Voids)
-            //    {
-            //        DrawPolyline(poly, red, 2f, true);
-            //        DrawLine(poly.Last(), poly.First(), red, 2f, true);
-            //    }
-            //}
+                foreach (var poly in _navigationZones.Voids)
+                {
+                    DrawPolyline(poly, _debugVoidColor, 2f, true);
+                    DrawLine(poly.Last(), poly.First(), _debugVoidColor, 2f, true);
+                }
+            }
         }
 
         public override void _UnhandledInput(InputEvent @event)
@@ -131,20 +124,6 @@ namespace GodotVTT
                 if(eventKey.Keycode == Key.Escape && eventKey.Pressed)
                 {
                     StopPlop();
-                }
-                if (eventKey.Keycode == Key.L && eventKey.Pressed)
-                {
-                    Texture2D tex;
-                    if (_small)
-                    {
-                        tex = ResourceLoader.Load<Texture2D>("res://Map/small_sample_map.png");
-                    }
-                    else
-                    {
-                        tex = ResourceLoader.Load<Texture2D>("res://Map/sample_map.png");
-                    }
-                    _small = !_small;
-                    SetMapTexture(tex);
                 }
             }
             else if (@event is InputEventMouseButton eventMouseButton)
@@ -201,5 +180,91 @@ namespace GodotVTT
             _vbl.Size = new Vector2I(Mathf.FloorToInt( size.X), Mathf.FloorToInt(size.Y));
             _mapSprite.Texture = texture;
         }
+
+        public MapDto ToDto()
+        {
+            return new MapDto
+            {
+                Id = Id,
+                Name = Name,
+            };
+        }
+
+        #region Navigation
+
+        public void SetNavigation(CompositePolygon newZones)
+        {
+            EnsureNavigationRegion();
+
+            if (_navigationZones is not null)
+            {
+                _navigationRegion.NavigationPolygon.ClearPolygons();
+                _navigationRegion.NavigationPolygon.ClearOutlines();
+            }
+            else
+            {
+                _navigationRegion.NavigationPolygon?.Dispose();
+                _navigationRegion.NavigationPolygon = new NavigationPolygon();
+            }
+
+            _navigationZones = newZones;
+
+            CalculateNavPolygons();
+        }
+
+        private NavigationRegion2D EnsureNavigationRegion()
+        {
+            if (_navigationRegion is null)
+            {
+                var child = this.GetChildren<NavigationRegion2D>().SingleOrDefault();
+                if (child is null)
+                {
+                    child = new NavigationRegion2D();
+                    child.Name = $"{Name}Nav";
+                    child.AddToGroup("nav_regions");
+                    AddChild(child);
+                    child.Owner = this;
+                }
+
+                _navigationRegion = child;
+            }
+
+            return _navigationRegion;
+        }
+
+        private void CalculateNavPolygons()
+        {
+            var o = MapResolution.map_origin * MapScale;
+            var p = MapResolution.map_size * MapScale;
+
+            var outline = new Vector2[]
+            {
+                new Vector2(Mathf.Min(o.X, p.X), Mathf.Min(o.Y, p.Y)),
+                new Vector2(Mathf.Max(o.X, p.X), Mathf.Min(o.Y, p.Y)),
+                new Vector2(Mathf.Max(o.X, p.X), Mathf.Max(o.Y, p.Y)),
+                new Vector2(Mathf.Min(o.X, p.X), Mathf.Max(o.Y, p.Y))
+            };
+
+            var navPoly = _navigationRegion.NavigationPolygon;
+            navPoly.AddOutline(outline);
+            foreach (var poly in _navigationZones.Voids.Union(_navigationZones.Solids))
+            {
+                navPoly.AddOutline(poly);
+            }
+
+            navPoly.MakePolygonsFromOutlines();
+        }
+
+        public void AddPolygonToNavigation(Vector2[] polygon)
+        {
+            _navigationZones.Add(polygon);
+            CalculateNavPolygons();
+            if (DrawNavigation)
+            {
+                QueueRedraw();
+            }
+        }
+
+        #endregion
     }
 }
